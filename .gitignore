@@ -2,3 +2,4 @@ apple_health_export/
 export.zip
 *.xml
 *.txt
+*.env
