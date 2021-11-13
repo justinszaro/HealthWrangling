@@ -2,6 +2,7 @@ import mysql.connector
 import dotenv
 import os
 
+
 dotenv.load_dotenv()
 
 username = os.getenv('USERNAME')
