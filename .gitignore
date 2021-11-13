@@ -3,3 +3,4 @@ export.zip
 *.xml
 *.txt
 *.env
+data/
