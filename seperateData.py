@@ -41,7 +41,7 @@ def main():
         for line in in_file:
             if line.find('sourceName=') != -1:
                 sourceName = getSourceName(line)
-                addLineToFiles(sourceName, line, files)
+                addLineToFiles(sourceName, line[9:], files)
     closeFiles(files)
 
 
