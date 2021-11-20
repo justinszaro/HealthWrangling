@@ -4,3 +4,4 @@ export.zip
 *.txt
 *.env
 data/
+.venv
