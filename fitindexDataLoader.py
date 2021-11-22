@@ -1,4 +1,4 @@
-from SQLConnect import SQLConnect
+import SQLConnect
 
 def getDateAndValue(line):
     components = line.split()
@@ -7,9 +7,9 @@ def getDateAndValue(line):
 
 def insertIntoDict(date, value, dict):
     if date in dict.keys():
-        dict[date] = str((float(dict[date]) + value / 2))
+        dict[date] = (dict[date] + value / 2).__round__()
     else:
-        dict[date] = str(value)
+        dict[date] = value
     return dict
 
 
@@ -46,24 +46,12 @@ def getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalE
     return dates.union(bodyMassIndex.keys(), bodyMass.keys(), bodyFatPercentage.keys(), leanBodyMass.keys(), basalEnergyBurned.keys())
 
 
-def quotes(string):
-    return '"' + string + '"'
-
-
 def addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned):
-    connector = SQLConnect()
-    connector.useDatabase('Health')
-    connector.create_table('fitindex', ['date DATE', 'bodyMassIndex FLOAT', 'bodyMass FLOAT', 'bodyFatPercentage FLOAT',
-                                        'leanBodyMass FLOAT', 'basalEnergyBurned FLOAT'])
-    for date in dates:
-        connector.insert_into_table('fitindex', [quotes(date), bodyMassIndex.get(date, '0.0'), bodyMass.get(date, '0.0'),
-                                                 bodyFatPercentage.get(date, '0.0'), leanBodyMass.get(date, '0.0'),
-                                                 basalEnergyBurned.get(date, '0.0')])
-    connector.commit()
+    pass
 
 
 def main():
-    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('data/fitindex.txt')
+    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('fitindex.txt')
     dates = getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
     addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
 
