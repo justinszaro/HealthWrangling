@@ -33,7 +33,6 @@ def toSQL(data):
     connector.useDatabase('Health')
     connector.create_table('hidrate', ['date CHAR(10), amount FLOAT'])
     for key in data.keys():
-        print(key, str(data[key]))
         connector.insert_into_table('hidrate', [quotes(key), str(data[key])])
     connector.commit()
 
