@@ -2,8 +2,8 @@ import SQLConnect
 
 
 def getDateAndValue(line):
-    components = line.split('" ')
-    return [components[5].split('=')[-1].strip('"'), components[-1].split('"')[1]]
+    components = line.split()
+    return [components[7].split('=')[1].strip('"'), components[-1][7:len(components[-1]) - 2].strip('"')]
 
 
 def insertIntoDict(date, value, dictionary):
