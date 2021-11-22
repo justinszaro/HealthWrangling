@@ -35,6 +35,7 @@ class SQLConnect:
         if 'None' in values:
             values[values.index('None')] = "'None'"
         self.cursor.execute("Insert into {} VALUES ({})".format(name, ', '.join(values)))
+        print(name, values)
 
     def commit(self):
         self.conn.commit()
