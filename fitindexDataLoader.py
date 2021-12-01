@@ -9,7 +9,7 @@ def getDateAndValue(line):
 def insertIntoDict(line, dict):
     date, value = getDateAndValue(line)
     if date in dict.keys():
-        dict[date] = str((float(dict[date]) + float(value) / 2))
+        dict[date] = str(((float(dict[date]) + float(value)) / 2))
     else:
         dict[date] = str(value)
     return dict
@@ -55,7 +55,7 @@ def addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass
 
 
 def main():
-    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('data/fitindex.txt')
+    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('fitindex.txt')
     dates = getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
     addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
 

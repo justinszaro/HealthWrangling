@@ -29,12 +29,12 @@ def toSQL(data):
     connector.useDatabase('health')
     connector.create_table('Hidrate', ['date CHAR(10), amount FLOAT'])
     for key in data.keys():
-        connector.insert_into_table('hidrate', [key, str(data[key])])
+        connector.insert_into_table('Hidrate', [key, str(data[key])])
     connector.commit()
 
 
 def main():
-    hydrateData = getData('data/hidrate.txt')
+    hydrateData = getData('hidrate.txt')
     toSQL(hydrateData)
 
 
