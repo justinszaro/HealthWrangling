@@ -1,4 +1,4 @@
-import SQLConnect
+from SQLConnect import SQLConnect
 
 
 def getDateAndValue(line):
@@ -8,9 +8,9 @@ def getDateAndValue(line):
 
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
-        dictionary[date] = (dictionary[date] + value / 2).__round__()
+        dictionary[date] = str(((float(dictionary[date]) + float(value)) / 2).__round__())
     else:
-        dictionary[date] = value
+        dictionary[date] = str(value)
     return dictionary
 
 
@@ -70,7 +70,29 @@ def getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFat
 
 
 def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium):
-    pass
+    connector = SQLConnect()
+    connector.useDatabase('health')
+    connector.create_table('MyFitnessPal', ['date CHAR(10), bodyMass FLOAT, dietaryFatTotal FLOAT, '
+                                            'dietaryFatPolyunsaturated FLOAT, dietaryFatMonounsaturated FLOAT, '
+                                            'dietaryFatSaturated FLOAT, dietaryCholesterol FLOAT, dietarySodium '
+                                            'FLOAT, dietaryCarbohydrates FLOAT, dietaryFiber FLOAT, dietarySugar '
+                                            'FLOAT, dietaryEnergyConsumed FLOAT, dietaryProtein FLOAT, '
+                                            'dietaryVitaminC FLOAT, dietaryCalcium FLOAT, dietaryIron FLOAT, '
+                                            'dietaryPotassium FLOAT'])
+    for date in dates:
+        connector.insert_into_table('MyFitnessPal', [date, bodyMass.get(date, '0.0'), dietaryFatTotal.get(date, '0.0'),
+                                                     dietaryFatPolyunsaturated.get(date, '0.0'),
+                                                     dietaryFatMonounsaturated.get(date, '0.0'),
+                                                     dietaryFatSaturated.get(date, '0.0'),
+                                                     dietaryCholesterol.get(date, '0.0'),
+                                                     dietarySodium.get(date, '0.0'),
+                                                     dietaryCarbohydrates.get(date, '0.0'),
+                                                     dietaryFiber.get(date, '0.0'), dietarySugar.get(date, '0.0'),
+                                                     dietaryEnergyConsumed.get(date, '0.0'),
+                                                     dietaryProtein.get(date, '0.0'),
+                                                     dietaryVitaminC.get(date, '0.0'), dietaryCalcium.get(date, '0.0'),
+                                                     dietaryIron.get(date, '0.0'), dietaryPotassium.get(date, '0.0')])
+    connector.commit()
 
 
 def main():

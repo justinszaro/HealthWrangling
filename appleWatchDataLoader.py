@@ -1,16 +1,17 @@
-import SQLConnect
+from SQLConnect import SQLConnect
 
 
 def getDateAndValue(line):
     components = line.split()
-    return [components[18].split('=')[1].strip('"'), components[-1][7:len(components[-1]) - 2].strip('"')]
+    componentsForDate = line.split('startDate="')
+    return [componentsForDate[1].split()[0], components[-1].split('"')[1]]
 
 
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
-        dictionary[date] = (dictionary[date] + value / 2).__round__()
+        dictionary[date] = str(((float(dictionary[date]) + float(value)) / 2).__round__())
     else:
-        dictionary[date] = value
+        dictionary[date] = str(value)
     return dictionary
 
 
@@ -47,8 +48,21 @@ def getAllDates(heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned,
     return dates.union(heartRate.keys(), stepCount.keys(), distanceWalkingRunning.keys(), basalEnergyBurned.keys(), activeEnergyBurned.keys())
 
 
+def quotes(string):
+    return '"' + string + '"'
+
+
 def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned):
-    pass
+    connector = SQLConnect()
+    connector.useDatabase('health')
+    connector.create_table('applewatch', ['date DATE', 'heartRate FLOAT', 'stepCount FLOAT', 'distanceWalkingRunning FLOAT',
+                                        'basalEnergyBurned FLOAT', 'activeEnergyBurned FLOAT'])
+    for date in dates:
+        connector.insert_into_table('applewatch',
+                                    [date, heartRate.get(date, '0.0'), stepCount.get(date, '0.0'),
+                                     distanceWalkingRunning.get(date, '0.0'), basalEnergyBurned.get(date, '0.0'),
+                                     activeEnergyBurned.get(date, '0.0')])
+    connector.commit()
 
 
 def main():
