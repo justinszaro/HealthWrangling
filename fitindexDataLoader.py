@@ -1,4 +1,5 @@
 from SQLConnect import SQLConnect
+from datetime import datetime
 
 
 def getDateAndValue(line):
@@ -42,15 +43,35 @@ def getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalE
     return dates.union(bodyMassIndex.keys(), bodyMass.keys(), bodyFatPercentage.keys(), leanBodyMass.keys(), basalEnergyBurned.keys())
 
 
+def getDayOfTheWeek(date):
+    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
+    day = datetimeobject.weekday()
+
+    if day == 0:
+        return 'Monday'
+    elif day == 1:
+        return 'Tuesday'
+    elif day == 2:
+        return 'Wednesday'
+    elif day == 3:
+        return 'Thursday'
+    elif day == 4:
+        return 'Friday'
+    elif day == 5:
+        return 'Saturday'
+    elif day == 6:
+        return 'Sunday'
+
+
 def addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned):
     connector = SQLConnect()
     connector.useDatabase('health')
     connector.create_table('Fitindex', ['date DATE', 'bodyMassIndex FLOAT', 'bodyMass FLOAT', 'bodyFatPercentage FLOAT',
-                                        'leanBodyMass FLOAT', 'basalEnergyBurned FLOAT'])
+                                        'leanBodyMass FLOAT', 'basalEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
     for date in dates:
         connector.insert_into_table('fitindex', [date, bodyMassIndex.get(date, '0.0'), bodyMass.get(date, '0.0'),
                                                  bodyFatPercentage.get(date, '0.0'), leanBodyMass.get(date, '0.0'),
-                                                 basalEnergyBurned.get(date, '0.0')])
+                                                 basalEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
     connector.commit()
 
 
