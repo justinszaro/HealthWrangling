@@ -1,4 +1,5 @@
 from SQLConnect import SQLConnect
+from datetime import datetime
 
 
 def getDateAndValue(line):
@@ -69,6 +70,26 @@ def getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFat
     return dates.union(bodyMass.keys(), dietaryFatTotal.keys(), dietaryFatPolyunsaturated.keys(), dietaryFatMonounsaturated.keys(), dietaryFatSaturated.keys(), dietaryCholesterol.keys(), dietarySodium.keys(), dietaryCarbohydrates.keys(), dietaryFiber.keys(), dietarySugar.keys(), dietaryEnergyConsumed.keys(), dietaryProtein.keys(), dietaryVitaminC.keys(), dietaryCalcium.keys(), dietaryIron.keys(), dietaryPotassium.keys())
 
 
+def getDayOfTheWeek(date):
+    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
+    day = datetimeobject.weekday()
+
+    if day == 0:
+        return 'Monday'
+    elif day == 1:
+        return 'Tuesday'
+    elif day == 2:
+        return 'Wednesday'
+    elif day == 3:
+        return 'Thursday'
+    elif day == 4:
+        return 'Friday'
+    elif day == 5:
+        return 'Saturday'
+    elif day == 6:
+        return 'Sunday'
+
+
 def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium):
     connector = SQLConnect()
     connector.useDatabase('health')
@@ -78,7 +99,7 @@ def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, di
                                             'FLOAT, dietaryCarbohydrates FLOAT, dietaryFiber FLOAT, dietarySugar '
                                             'FLOAT, dietaryEnergyConsumed FLOAT, dietaryProtein FLOAT, '
                                             'dietaryVitaminC FLOAT, dietaryCalcium FLOAT, dietaryIron FLOAT, '
-                                            'dietaryPotassium FLOAT'])
+                                            'dietaryPotassium FLOAT, dayOfTheWeek varchar(255)'])
     for date in dates:
         connector.insert_into_table('MyFitnessPal', [date, bodyMass.get(date, '0.0'), dietaryFatTotal.get(date, '0.0'),
                                                      dietaryFatPolyunsaturated.get(date, '0.0'),
@@ -91,7 +112,8 @@ def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, di
                                                      dietaryEnergyConsumed.get(date, '0.0'),
                                                      dietaryProtein.get(date, '0.0'),
                                                      dietaryVitaminC.get(date, '0.0'), dietaryCalcium.get(date, '0.0'),
-                                                     dietaryIron.get(date, '0.0'), dietaryPotassium.get(date, '0.0')])
+                                                     dietaryIron.get(date, '0.0'), dietaryPotassium.get(date, '0.0'),
+                                                     getDayOfTheWeek(date)])
     connector.commit()
 
 

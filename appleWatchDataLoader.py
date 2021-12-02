@@ -1,4 +1,5 @@
 from SQLConnect import SQLConnect
+from datetime import datetime
 
 
 def getDateAndValue(line):
@@ -48,6 +49,26 @@ def getAllDates(heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned,
     return dates.union(heartRate.keys(), stepCount.keys(), distanceWalkingRunning.keys(), basalEnergyBurned.keys(), activeEnergyBurned.keys())
 
 
+def getDayOfTheWeek(date):
+    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
+    day = datetimeobject.weekday()
+
+    if day == 0:
+        return 'Monday'
+    elif day == 1:
+        return 'Tuesday'
+    elif day == 2:
+        return 'Wednesday'
+    elif day == 3:
+        return 'Thursday'
+    elif day == 4:
+        return 'Friday'
+    elif day == 5:
+        return 'Saturday'
+    elif day == 6:
+        return 'Sunday'
+
+
 def quotes(string):
     return '"' + string + '"'
 
@@ -55,13 +76,14 @@ def quotes(string):
 def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('applewatch', ['date DATE', 'heartRate FLOAT', 'stepCount FLOAT', 'distanceWalkingRunning FLOAT',
-                                        'basalEnergyBurned FLOAT', 'activeEnergyBurned FLOAT'])
+    connector.create_table('applewatch', ['date DATE', 'heartRate FLOAT', 'stepCount FLOAT',
+                                          'distanceWalkingRunning FLOAT', 'basalEnergyBurned FLOAT',
+                                          'activeEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
     for date in dates:
         connector.insert_into_table('applewatch',
                                     [date, heartRate.get(date, '0.0'), stepCount.get(date, '0.0'),
                                      distanceWalkingRunning.get(date, '0.0'), basalEnergyBurned.get(date, '0.0'),
-                                     activeEnergyBurned.get(date, '0.0')])
+                                     activeEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
     connector.commit()
 
 
