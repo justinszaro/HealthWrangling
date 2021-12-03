@@ -56,12 +56,17 @@ def getDayOfTheWeek(date):
         return 'Sunday'
 
 
+def getHydrationCategory(date):
+    return "TBD"
+
+
 def toSQL(data):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Hidrate', ['date CHAR(19), amount FLOAT, dayOfTheWeek varchar(255)'])
+    connector.create_table('Hidrate', ['date CHAR(19), amount FLOAT, dayOfTheWeek varchar(255), hydrationCategory '
+                                       'varchar(255)'])
     for key in data.keys():
-        connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key)])
+        connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key), getHydrationCategory(key)])
     connector.commit()
 
 
