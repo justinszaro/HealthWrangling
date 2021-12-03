@@ -10,9 +10,18 @@ def getDateAndValue(line):
 
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
-        dictionary[date] = str(((float(dictionary[date]) + float(value)) / 2).__round__())
+        dictionary[date] = str((float(dictionary[date]) + float(value)).__round__())
     else:
         dictionary[date] = str(value)
+    return dictionary
+
+
+def addTotalToDictionary(line, dictionary):
+    date, value = getDateAndValue(line)
+    if date in dictionary.keys():
+        dictionary[date].append(float(value))
+    else:
+        dictionary[date] = [float(value)]
     return dictionary
 
 
@@ -32,11 +41,11 @@ def getData(filename):
         for line in file:
             data_type = getDataType(line)
             if data_type == "HeartRate":
-                heartRate = addToDictionary(line, heartRate)
+                heartRate = addTotalToDictionary(line, heartRate)
             elif data_type == "StepCount":
                 stepCount = addToDictionary(line, stepCount)
             elif data_type == "DistanceWalkingRunning":
-                distanceWalkingRunning = addToDictionary(line, distanceWalkingRunning)
+                distanceWalkingRunning = addTotalToDictionary(line, distanceWalkingRunning)
             elif data_type == "BasalEnergyBurned":
                 basalEnergyBurned = addToDictionary(line, basalEnergyBurned)
             elif data_type == "ActiveEnergyBurned":
@@ -73,16 +82,21 @@ def quotes(string):
     return '"' + string + '"'
 
 
+def getAverage(heartRate, date):
+    avg = sum(heartRate.get(date, [0])) / len(heartRate.get(date, [1]))
+    return str(avg)
+
+
 def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('applewatch', ['date DATE', 'heartRate FLOAT', 'stepCount FLOAT',
+    connector.create_table('AppleWatch', ['date DATE', 'averageHeartRate FLOAT', 'stepCount FLOAT',
                                           'distanceWalkingRunning FLOAT', 'basalEnergyBurned FLOAT',
                                           'activeEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
     for date in dates:
-        connector.insert_into_table('applewatch',
-                                    [date, heartRate.get(date, '0.0'), stepCount.get(date, '0.0'),
-                                     distanceWalkingRunning.get(date, '0.0'), basalEnergyBurned.get(date, '0.0'),
+        connector.insert_into_table('AppleWatch',
+                                    [date, getAverage(heartRate, date), stepCount.get(date, '0.0'),
+                                     str(sum(distanceWalkingRunning.get(date, [0.0]))), basalEnergyBurned.get(date, '0.0'),
                                      activeEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
     connector.commit()
 
