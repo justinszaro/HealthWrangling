@@ -3,6 +3,7 @@ import hydrateDataLoader
 import fitindexDataLoader
 import myFitnessPalDataLoader
 import appleWatchDataLoader
+import hydrationLocation
 
 
 def main():
@@ -12,6 +13,7 @@ def main():
     fitindexDataLoader.main()
     myFitnessPalDataLoader.main()
     appleWatchDataLoader.main()
+    hydrationLocation.main()
     connector.commit()
 
 

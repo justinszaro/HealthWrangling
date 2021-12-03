@@ -66,7 +66,7 @@ def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnerg
 
 
 def main():
-    heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = getData('appleWatch.txt')
+    heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = getData('data/appleWatch.txt')
     dates = getAllDates(heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned)
     addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned)
 
