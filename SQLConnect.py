@@ -1,11 +1,12 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
+import datetime
 
 
 def quotes(lst):
     for i in range(len(lst)):
-        if not isinstance(lst[i], int) or not isinstance(lst[i], float):
+        if not isinstance(lst[i], int) and not isinstance(lst[i], float):
             lst[i] = '"' + lst[i] + '"'
     return lst
 
