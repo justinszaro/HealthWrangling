@@ -1,10 +1,9 @@
 def openFiles():
-    myFitnessPal = open('myFitnessPal.txt', 'w')
-    hidrate = open('hidrate.txt', 'w')
-    fitindex = open('fitindex.txt', 'w')
-    iPhone = open('iPhone.txt', 'w')
-    appleWatch = open('appleWatch.txt', 'w')
-    return [myFitnessPal, hidrate, fitindex, iPhone, appleWatch]
+    myFitnessPal = open('data/myFitnessPal.csv', 'w')
+    hidrate = open('data/hidrate.csv', 'w')
+    fitindex = open('data/fitindex.csv', 'w')
+    appleWatch = open('data/appleWatch.csv', 'w')
+    return [myFitnessPal, hidrate, fitindex, appleWatch]
 
 
 def getSourceName(line):
@@ -14,20 +13,24 @@ def getSourceName(line):
     return line[first_quote + 1:second_quote]
 
 
+def writeLine(line, file):
+    components = line.split()
+    label = components[0][30:len(components[0]) - 1]
+    start_datetime = components[-4][9:] + ' ' + components[-3]
+    value = components[-1][7:].strip('"/>')
+    file.write(','.join([label, start_datetime, value]) + '\n')
+
+
 def addLineToFiles(sourceName, line, files):
-    myFitnessPal, hidrate, fitindex, iPhone, appleWatch = files
+    myFitnessPal, hidrate, fitindex, appleWatch = files
     if sourceName == 'Justin’s Apple\xa0Watch':
-        appleWatch.write(line)
+        writeLine(line, appleWatch)
     elif sourceName == 'Hidrate':
-        hidrate.write(line)
+        writeLine(line, hidrate)
     elif sourceName == 'FITINDEX':
-        fitindex.write(line)
-    elif sourceName == 'Justin’s iPhone':
-        iPhone.write(line)
-    elif sourceName == 'Justin’s Apple\xa0Watch':
-        appleWatch.write(line)
+        writeLine(line, fitindex)
     elif sourceName == 'MyFitnessPal':
-        myFitnessPal.write(line)
+        writeLine(line, myFitnessPal)
 
 
 def closeFiles(files):
@@ -37,7 +40,7 @@ def closeFiles(files):
 
 def main():
     files = openFiles()
-    with open('apple_health_export/export.xml') as in_file:
+    with open('data/export.xml') as in_file:
         for line in in_file:
             if line.find('sourceName=') != -1:
                 sourceName = getSourceName(line)
