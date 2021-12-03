@@ -9,7 +9,7 @@ def getDateAndValue(line):
 
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
-        dictionary[date] = str(((float(dictionary[date]) + float(value)) / 2).__round__())
+        dictionary[date] = str((float(dictionary[date]) + float(value)).__round__())
     else:
         dictionary[date] = str(value)
     return dictionary
