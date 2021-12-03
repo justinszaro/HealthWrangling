@@ -28,7 +28,7 @@ def getData(filename):
     with open(filename) as in_file:
         for line in in_file:
             components = line.split()
-            date = components[7][11:]
+            date = components[7][11:] + " " + components[8]
             value = components[13][6:].strip('"/>')
             hydrateData = insertIntoDict(hydrateData, date, convertToFlOz(value))
             toOutputFile(outfile, line)
@@ -37,7 +37,7 @@ def getData(filename):
 
 
 def getDayOfTheWeek(date):
-    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
+    datetimeobject = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
     day = datetimeobject.weekday()
 
     if day == 0:
@@ -59,7 +59,7 @@ def getDayOfTheWeek(date):
 def toSQL(data):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Hidrate', ['date CHAR(10), amount FLOAT, dayOfTheWeek varchar(255)'])
+    connector.create_table('Hidrate', ['date CHAR(19), amount FLOAT, dayOfTheWeek varchar(255)'])
     for key in data.keys():
         connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key)])
     connector.commit()
