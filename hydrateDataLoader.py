@@ -7,11 +7,8 @@ def convertToFlOz(value):
 
 
 def toOutputFile(outfile, line):
-    components = line.split()
-    date = components[7][11:]
-    time = components[8]
-    value = components[13][6:].strip('"/>')
-    outfile.write(','.join([date, time, str(convertToFlOz(value))]) + '\n')
+    data_type, date, value = line.strip().split(',')
+    outfile.write(','.join([date, str(convertToFlOz(value))]) + '\n')
 
 
 def insertIntoDict(dictionary, date, value):
@@ -23,17 +20,16 @@ def insertIntoDict(dictionary, date, value):
 
 
 def getData(filename):
-    hydrateData = dict()
+    hidrateData = dict()
     outfile = open('data/HydrateDataPoints.csv', 'w')
     with open(filename) as in_file:
         for line in in_file:
-            components = line.split()
-            date = components[7][11:] + " " + components[8]
-            value = components[13][6:].strip('"/>')
-            hydrateData = insertIntoDict(hydrateData, date, convertToFlOz(value))
+            data_type, date, value = line.strip().split(',')
+            date, time = date.split()
+            hidrateData = insertIntoDict(hidrateData, date, convertToFlOz(value))
             toOutputFile(outfile, line)
     outfile.close()
-    return hydrateData
+    return hidrateData
 
 
 def getDayOfTheWeek(date):
@@ -63,7 +59,7 @@ def getHydrationCategory(date):
 def toSQL(data):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Hidrate', ['date CHAR(19), amount FLOAT, dayOfTheWeek varchar(255), hydrationCategory '
+    connector.create_table('Hidrate', ['date DATETIME, amount FLOAT, dayOfTheWeek varchar(255), hydrationCategory '
                                        'varchar(255)'])
     for key in data.keys():
         connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key), getHydrationCategory(key)])
@@ -71,7 +67,7 @@ def toSQL(data):
 
 
 def main():
-    hydrateData = getData('data/hidrate.txt')
+    hydrateData = getData('data/hidrate.csv')
     toSQL(hydrateData)
 
 

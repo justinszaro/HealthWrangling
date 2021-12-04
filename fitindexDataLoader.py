@@ -2,29 +2,21 @@ from SQLConnect import SQLConnect
 from datetime import datetime
 
 
-def getDateAndValue(line):
-    components = line.split()
-    return [components[7].split('=')[1].strip('"'), components[-1][7:len(components[-1])-2].strip('"')]
-
-
 def insertIntoDict(line, dict):
-    date, value = getDateAndValue(line)
+    data_type, date, value = line.split(',')
+    date, time = date.split()
     if date in dict.keys():
-        dict[date] = str(((float(dict[date]) + float(value)) / 2))
+        dict[date] = str(((float(dict[date]) + float(value)) / 2).__round__(2))
     else:
-        dict[date] = str(value)
+        dict[date] = str(float(value).__round__(2))
     return dict
-
-
-def getDataType(line):
-    return line.split()[0][30:].strip('"')
 
 
 def getData(filename):
     bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = [dict(), dict(), dict(), dict(), dict()]
     with open(filename) as in_file:
         for line in in_file:
-            data_type = getDataType(line)
+            data_type = line.strip().split(',')[0]
             if data_type == "BodyMassIndex":
                 bodyMassIndex = insertIntoDict(line, bodyMassIndex)
             elif data_type == "BodyMass":
@@ -76,7 +68,7 @@ def addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass
 
 
 def main():
-    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('data/fitindex.txt')
+    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = getData('data/fitindex.csv')
     dates = getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
     addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
 

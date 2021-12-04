@@ -2,12 +2,6 @@ from SQLConnect import SQLConnect
 from datetime import datetime
 
 
-def getDateAndValue(line):
-    components = line.split()
-    componentsForDate = line.split('startDate="')
-    return [componentsForDate[1].split()[0], components[-1].split('"')[1]]
-
-
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
         dictionary[date] = str((float(dictionary[date]) + float(value)).__round__())
@@ -17,7 +11,8 @@ def insertIntoDict(date, value, dictionary):
 
 
 def addTotalToDictionary(line, dictionary):
-    date, value = getDateAndValue(line)
+    data_type, date, value = line.split(',')
+    date, time = date.split()
     if date in dictionary.keys():
         dictionary[date].append(float(value))
     else:
@@ -26,20 +21,17 @@ def addTotalToDictionary(line, dictionary):
 
 
 def addToDictionary(line, dictionary):
-    date, value = getDateAndValue(line)
+    data_type, date, value = line.split(',')
+    date, time = date.split()
     dictionary = insertIntoDict(date, float(value), dictionary)
     return dictionary
-
-
-def getDataType(line):
-    return line.split()[0][30:].strip('"')
 
 
 def getData(filename):
     heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = [dict(), dict(), dict(), dict(), dict()]
     with open(filename) as file:
         for line in file:
-            data_type = getDataType(line)
+            data_type = line.split(',')[0]
             if data_type == "HeartRate":
                 heartRate = addTotalToDictionary(line, heartRate)
             elif data_type == "StepCount":
@@ -59,6 +51,9 @@ def getAllDates(heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned,
 
 
 def getDayOfTheWeek(date):
+    date = date.split()[0]
+    if date == '9999:01:01':
+        return "None"
     datetimeobject = datetime.strptime(date, '%Y-%m-%d')
     day = datetimeobject.weekday()
 
@@ -102,7 +97,7 @@ def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnerg
 
 
 def main():
-    heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = getData('data/appleWatch.txt')
+    heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = getData('data/appleWatch.csv')
     dates = getAllDates(heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned)
     addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned)
 

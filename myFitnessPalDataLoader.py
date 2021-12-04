@@ -2,11 +2,6 @@ from SQLConnect import SQLConnect
 from datetime import datetime
 
 
-def getDateAndValue(line):
-    components = line.split()
-    return [components[7].split('=')[1].strip('"'), components[-1][7:len(components[-1]) - 2].strip('"')]
-
-
 def insertIntoDict(date, value, dictionary):
     if date in dictionary.keys():
         dictionary[date] = str((float(dictionary[date]) + float(value)).__round__())
@@ -16,20 +11,17 @@ def insertIntoDict(date, value, dictionary):
 
 
 def addToDictionary(line, dictionary):
-    date, value = getDateAndValue(line)
+    data_type, date, value = line.strip().split(',')
+    date, time = date.split()
     dictionary = insertIntoDict(date, float(value), dictionary)
     return dictionary
-
-
-def getDataType(line):
-    return line.split()[0][30:].strip('"')
 
 
 def getData(filename):
     bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = [dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict()]
     with open(filename) as file:
         for line in file:
-            data_type = getDataType(line)
+            data_type = line.split(',')[0]
             if data_type == "BodyMass":
                 bodyMass = addToDictionary(line, bodyMass)
             elif data_type == "DietaryFatTotal":
@@ -118,7 +110,7 @@ def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, di
 
 
 def main():
-    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = getData('data/myFitnessPal.txt')
+    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = getData('data/myFitnessPal.csv')
     dates = getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium)
     addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium)
 
