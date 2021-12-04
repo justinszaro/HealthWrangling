@@ -24,9 +24,8 @@ def getData(filename):
     outfile = open('data/HydrateDataPoints.csv', 'w')
     with open(filename) as in_file:
         for line in in_file:
-            data_type, date, value = line.strip().split(',')
-            date, time = date.split()
-            hidrateData = insertIntoDict(hidrateData, date, convertToFlOz(value))
+            data_type, dateTime, value = line.strip().split(',')
+            hidrateData = insertIntoDict(hidrateData, dateTime, convertToFlOz(value))
             toOutputFile(outfile, line)
     outfile.close()
     return hidrateData
