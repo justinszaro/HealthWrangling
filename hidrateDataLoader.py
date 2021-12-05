@@ -21,7 +21,7 @@ def insertIntoDict(dictionary, date, value):
 
 def getData(filename):
     hidrateData = dict()
-    outfile = open('data/HydrateDataPoints.csv', 'w')
+    outfile = open('data/HidrateDataPoints.csv', 'w')
     with open(filename) as in_file:
         for line in in_file:
             data_type, dateTime, value = line.strip().split(',')
@@ -32,8 +32,8 @@ def getData(filename):
 
 
 def getDayOfTheWeek(date):
-    datetimeobject = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-    day = datetimeobject.weekday()
+    dateTimeObject = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+    day = dateTimeObject.weekday()
 
     if day == 0:
         return 'Monday'
@@ -51,23 +51,23 @@ def getDayOfTheWeek(date):
         return 'Sunday'
 
 
-def getHydrationCategory(date):
+def getHidrationCategory(date):
     return "TBD"
 
 
 def toSQL(data):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Hidrate', ['date DATETIME, amount FLOAT, dayOfTheWeek varchar(255), hydrationCategory '
+    connector.create_table('Hidrate', ['date DATETIME, amount FLOAT, dayOfTheWeek varchar(255), hidrationCategory '
                                        'varchar(255)'])
     for key in data.keys():
-        connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key), getHydrationCategory(key)])
+        connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key), getHidrationCategory(key)])
     connector.commit()
 
 
 def main():
-    hydrateData = getData('data/hidrate.csv')
-    toSQL(hydrateData)
+    hidrateData = getData('data/hidrate.csv')
+    toSQL(hidrateData)
 
 
 if __name__ == '__main__':
