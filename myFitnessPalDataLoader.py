@@ -18,7 +18,9 @@ def addToDictionary(line, dictionary):
 
 
 def getData(filename):
-    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = [dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict()]
+    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = [
+        dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(), dict(),
+        dict(), dict()]
     with open(filename) as file:
         for line in file:
             data_type = line.split(',')[0]
@@ -54,17 +56,25 @@ def getData(filename):
                 dietaryIron = addToDictionary(line, dietaryIron)
             elif data_type == "DietaryPotassium":
                 dietaryPotassium = addToDictionary(line, dietaryPotassium)
-    return [bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium]
+    return [bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated,
+            dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed,
+            dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium]
 
 
-def getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium):
+def getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated,
+                dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar,
+                dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium):
     dates = set()
-    return dates.union(bodyMass.keys(), dietaryFatTotal.keys(), dietaryFatPolyunsaturated.keys(), dietaryFatMonounsaturated.keys(), dietaryFatSaturated.keys(), dietaryCholesterol.keys(), dietarySodium.keys(), dietaryCarbohydrates.keys(), dietaryFiber.keys(), dietarySugar.keys(), dietaryEnergyConsumed.keys(), dietaryProtein.keys(), dietaryVitaminC.keys(), dietaryCalcium.keys(), dietaryIron.keys(), dietaryPotassium.keys())
+    return dates.union(bodyMass.keys(), dietaryFatTotal.keys(), dietaryFatPolyunsaturated.keys(),
+                       dietaryFatMonounsaturated.keys(), dietaryFatSaturated.keys(), dietaryCholesterol.keys(),
+                       dietarySodium.keys(), dietaryCarbohydrates.keys(), dietaryFiber.keys(), dietarySugar.keys(),
+                       dietaryEnergyConsumed.keys(), dietaryProtein.keys(), dietaryVitaminC.keys(),
+                       dietaryCalcium.keys(), dietaryIron.keys(), dietaryPotassium.keys())
 
 
 def getDayOfTheWeek(date):
-    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
-    day = datetimeobject.weekday()
+    datetimeObject = datetime.strptime(date, '%Y-%m-%d')
+    day = datetimeObject.weekday()
 
     if day == 0:
         return 'Monday'
@@ -82,37 +92,49 @@ def getDayOfTheWeek(date):
         return 'Sunday'
 
 
-def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium):
+def addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated,
+                 dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber,
+                 dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron,
+                 dietaryPotassium):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('MyFitnessPal', ['date CHAR(10), bodyMass FLOAT, dietaryFatTotal FLOAT, '
-                                            'dietaryFatPolyunsaturated FLOAT, dietaryFatMonounsaturated FLOAT, '
-                                            'dietaryFatSaturated FLOAT, dietaryCholesterol FLOAT, dietarySodium '
-                                            'FLOAT, dietaryCarbohydrates FLOAT, dietaryFiber FLOAT, dietarySugar '
-                                            'FLOAT, dietaryEnergyConsumed FLOAT, dietaryProtein FLOAT, '
-                                            'dietaryVitaminC FLOAT, dietaryCalcium FLOAT, dietaryIron FLOAT, '
-                                            'dietaryPotassium FLOAT, dayOfTheWeek varchar(255)'])
+    connector.createTable('MyFitnessPal', ['date CHAR(10), bodyMass FLOAT, dietaryFatTotal FLOAT, '
+                                           'dietaryFatPolyunsaturated FLOAT, dietaryFatMonounsaturated FLOAT, '
+                                           'dietaryFatSaturated FLOAT, dietaryCholesterol FLOAT, dietarySodium '
+                                           'FLOAT, dietaryCarbohydrates FLOAT, dietaryFiber FLOAT, dietarySugar '
+                                           'FLOAT, dietaryEnergyConsumed FLOAT, dietaryProtein FLOAT, '
+                                           'dietaryVitaminC FLOAT, dietaryCalcium FLOAT, dietaryIron FLOAT, '
+                                           'dietaryPotassium FLOAT, dayOfTheWeek varchar(255)'])
     for date in dates:
-        connector.insert_into_table('MyFitnessPal', [date, bodyMass.get(date, '0.0'), dietaryFatTotal.get(date, '0.0'),
-                                                     dietaryFatPolyunsaturated.get(date, '0.0'),
-                                                     dietaryFatMonounsaturated.get(date, '0.0'),
-                                                     dietaryFatSaturated.get(date, '0.0'),
-                                                     dietaryCholesterol.get(date, '0.0'),
-                                                     dietarySodium.get(date, '0.0'),
-                                                     dietaryCarbohydrates.get(date, '0.0'),
-                                                     dietaryFiber.get(date, '0.0'), dietarySugar.get(date, '0.0'),
-                                                     dietaryEnergyConsumed.get(date, '0.0'),
-                                                     dietaryProtein.get(date, '0.0'),
-                                                     dietaryVitaminC.get(date, '0.0'), dietaryCalcium.get(date, '0.0'),
-                                                     dietaryIron.get(date, '0.0'), dietaryPotassium.get(date, '0.0'),
-                                                     getDayOfTheWeek(date)])
+        connector.insertIntoTable('MyFitnessPal', [date, bodyMass.get(date, '0.0'), dietaryFatTotal.get(date, '0.0'),
+                                                   dietaryFatPolyunsaturated.get(date, '0.0'),
+                                                   dietaryFatMonounsaturated.get(date, '0.0'),
+                                                   dietaryFatSaturated.get(date, '0.0'),
+                                                   dietaryCholesterol.get(date, '0.0'),
+                                                   dietarySodium.get(date, '0.0'),
+                                                   dietaryCarbohydrates.get(date, '0.0'),
+                                                   dietaryFiber.get(date, '0.0'), dietarySugar.get(date, '0.0'),
+                                                   dietaryEnergyConsumed.get(date, '0.0'),
+                                                   dietaryProtein.get(date, '0.0'),
+                                                   dietaryVitaminC.get(date, '0.0'), dietaryCalcium.get(date, '0.0'),
+                                                   dietaryIron.get(date, '0.0'), dietaryPotassium.get(date, '0.0'),
+                                                   getDayOfTheWeek(date)])
     connector.commit()
 
 
 def main():
-    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = getData('data/myFitnessPal.csv')
-    dates = getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium)
-    addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium)
+    bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated, dietaryFatSaturated, \
+    dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber, dietarySugar, dietaryEnergyConsumed, \
+    dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron, dietaryPotassium = getData(
+        'data/myFitnessPal.csv')
+    dates = getAllDates(bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated,
+                        dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber,
+                        dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium,
+                        dietaryIron, dietaryPotassium)
+    addDataToSQL(dates, bodyMass, dietaryFatTotal, dietaryFatPolyunsaturated, dietaryFatMonounsaturated,
+                 dietaryFatSaturated, dietaryCholesterol, dietarySodium, dietaryCarbohydrates, dietaryFiber,
+                 dietarySugar, dietaryEnergyConsumed, dietaryProtein, dietaryVitaminC, dietaryCalcium, dietaryIron,
+                 dietaryPotassium)
 
 
 if __name__ == "__main__":

@@ -35,8 +35,8 @@ def getData(filename):
 def getDayOfTheWeek(date):
     if len(str(date)) > 19:
         date = str(date)[:-6]
-    dateTimeObject = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-    day = dateTimeObject.weekday()
+    datetimeObject = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+    day = datetimeObject.weekday()
 
     if day == 0:
         return 'Monday'
@@ -55,7 +55,6 @@ def getDayOfTheWeek(date):
 
 
 def isWithinDate(date, activity):
-    act4 = activity[4]
     return activity[2].date() < date.date() < activity[4][0].date()
 
 
@@ -86,10 +85,11 @@ def getHidrationCategory(date, calendarData):
 def toSQL(data, calendarData):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Hidrate', ['date DATETIME, amount FLOAT, dayOfTheWeek varchar(255), hidrationCategory '
-                                       'varchar(255)'])
+    connector.createTable('Hidrate', ['date DATETIME, amount FLOAT, dayOfTheWeek varchar(255), hidrationCategory '
+                                      'varchar(255)'])
     for key in data.keys():
-        connector.insert_into_table('Hidrate', [key, str(data[key]), getDayOfTheWeek(key), getHidrationCategory(key, calendarData)])
+        connector.insertIntoTable('Hidrate',
+                                  [key, str(data[key]), getDayOfTheWeek(key), getHidrationCategory(key, calendarData)])
     connector.commit()
 
 
