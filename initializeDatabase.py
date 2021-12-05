@@ -4,9 +4,11 @@ import fitindexDataLoader
 import myFitnessPalDataLoader
 import appleWatchDataLoader
 import calendarDataLoader
+import seperateData
 
 
 def main():
+    seperateData.main()
     connector = SQLConnect()
     connector.createDatabase('health')
     calendarData = calendarDataLoader.main()

@@ -7,7 +7,6 @@ from datetime import datetime
 def insertIntoSQL(data):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.query('Drop table if exists Calendar')
     connector.createTable('Calendar', ['summary VARCHAR(255)', 'days VARCHAR(255)', 'start_time DATETIME',
                                        'end_time DATETIME', 'end_date DATETIME'])
     for event in data:
@@ -25,21 +24,8 @@ def getDayOfTheWeek(date):
         date = str(date)[:-6]
     datetimeObject = datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S')
     day = datetimeObject.weekday()
-
-    if day == 0:
-        return 'MO'
-    elif day == 1:
-        return 'TU'
-    elif day == 2:
-        return 'WE'
-    elif day == 3:
-        return 'TH'
-    elif day == 4:
-        return 'FR'
-    elif day == 5:
-        return 'SA'
-    elif day == 6:
-        return 'SU'
+    days = ['MO', 'TU', 'WE', 'TR', 'FR', 'SA', 'SU']
+    return days[day]
 
 
 def getData(files):
@@ -48,8 +34,8 @@ def getData(files):
         with open('data/icsFiles/' + file) as infile:
             for component in Calendar.from_ical(infile.read()).walk('vevent'):
                 summary = component.get('SUMMARY', "None")
-                start_time = component.get('DTSTART', ["9999-01-01 00:00:00"]).dt
-                end_time = component.get('DTEND', "'9999-01-01 00:00:00'").dt
+                start_time = component.get('DTSTART').dt
+                end_time = component.get('DTEND').dt
                 if component.get('RRULE', None) is None:
                     continue
                 days = component.get('RRULE').get('BYDAY', [getDayOfTheWeek(start_time)])

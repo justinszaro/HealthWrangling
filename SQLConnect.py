@@ -5,8 +5,11 @@ import os
 
 def quotes(lst):
     for i in range(len(lst)):
+        if isinstance(lst[i], float):
+            lst[i] = lst[i].__round__(2)
         if not isinstance(lst[i], int) and not isinstance(lst[i], float):
-            lst[i] = '"' + lst[i] + '"'
+            lst[i] = '"' + str(lst[i]) + '"'
+        lst[i] = str(lst[i])
     return lst
 
 
