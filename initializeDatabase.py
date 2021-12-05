@@ -9,11 +9,11 @@ import calendarDataLoader
 def main():
     connector = SQLConnect()
     connector.createDatabase('health')
-    hidrateDataLoader.main()
+    calendarData = calendarDataLoader.main()
+    hidrateDataLoader.main(calendarData)
     fitindexDataLoader.main()
     myFitnessPalDataLoader.main()
     appleWatchDataLoader.main()
-    calendarDataLoader.main()
     connector.commit()
 
 

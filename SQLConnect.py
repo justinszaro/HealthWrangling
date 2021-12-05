@@ -40,8 +40,6 @@ class SQLConnect:
         return self.cursor.fetchall()
 
     def insert_into_table(self, name, values):
-        if 'None' in values:
-            values[values.index('None')] = "'None'"
         self.cursor.execute("Insert into {} VALUES ({})".format(name, ', '.join(quotes(values))))
 
     def commit(self):
