@@ -1,7 +1,6 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
-import datetime
 
 
 def quotes(lst):
@@ -27,7 +26,7 @@ class SQLConnect:
     def useDatabase(self, name):
         self.cursor.execute('Use {}'.format(name))
 
-    def create_table(self, name, attributes):
+    def createTable(self, name, attributes):
         self.cursor.execute("Create table {} ({})".format(name, ', '.join(attributes)))
 
     def query(self, query):
@@ -39,7 +38,7 @@ class SQLConnect:
     def fetchAll(self):
         return self.cursor.fetchall()
 
-    def insert_into_table(self, name, values):
+    def insertIntoTable(self, name, values):
         self.cursor.execute("Insert into {} VALUES ({})".format(name, ', '.join(quotes(values))))
 
     def commit(self):

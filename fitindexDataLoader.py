@@ -13,7 +13,8 @@ def insertIntoDict(line, dict):
 
 
 def getData(filename):
-    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = [dict(), dict(), dict(), dict(), dict()]
+    bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned = [dict(), dict(), dict(), dict(),
+                                                                                   dict()]
     with open(filename) as in_file:
         for line in in_file:
             data_type = line.strip().split(',')[0]
@@ -32,12 +33,13 @@ def getData(filename):
 
 def getAllDates(bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned):
     dates = set()
-    return dates.union(bodyMassIndex.keys(), bodyMass.keys(), bodyFatPercentage.keys(), leanBodyMass.keys(), basalEnergyBurned.keys())
+    return dates.union(bodyMassIndex.keys(), bodyMass.keys(), bodyFatPercentage.keys(), leanBodyMass.keys(),
+                       basalEnergyBurned.keys())
 
 
 def getDayOfTheWeek(date):
-    datetimeobject = datetime.strptime(date, '%Y-%m-%d')
-    day = datetimeobject.weekday()
+    datetimeObject = datetime.strptime(date, '%Y-%m-%d')
+    day = datetimeObject.weekday()
 
     if day == 0:
         return 'Monday'
@@ -58,12 +60,12 @@ def getDayOfTheWeek(date):
 def addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned):
     connector = SQLConnect()
     connector.useDatabase('health')
-    connector.create_table('Fitindex', ['date DATE', 'bodyMassIndex FLOAT', 'bodyMass FLOAT', 'bodyFatPercentage FLOAT',
-                                        'leanBodyMass FLOAT', 'basalEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
+    connector.createTable('Fitindex', ['date DATE', 'bodyMassIndex FLOAT', 'bodyMass FLOAT', 'bodyFatPercentage FLOAT',
+                                       'leanBodyMass FLOAT', 'basalEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
     for date in dates:
-        connector.insert_into_table('fitindex', [date, bodyMassIndex.get(date, '0.0'), bodyMass.get(date, '0.0'),
-                                                 bodyFatPercentage.get(date, '0.0'), leanBodyMass.get(date, '0.0'),
-                                                 basalEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
+        connector.insertIntoTable('Fitindex', [date, bodyMassIndex.get(date, '0.0'), bodyMass.get(date, '0.0'),
+                                               bodyFatPercentage.get(date, '0.0'), leanBodyMass.get(date, '0.0'),
+                                               basalEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
     connector.commit()
 
 
@@ -73,5 +75,5 @@ def main():
     addDataToSQL(dates, bodyMassIndex, bodyMass, bodyFatPercentage, leanBodyMass, basalEnergyBurned)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
