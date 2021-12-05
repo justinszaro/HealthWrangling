@@ -1,7 +1,7 @@
 from icalendar import Calendar
 from SQLConnect import SQLConnect
 import os
-
+from datetime import datetime
 
 def insertIntoSQL(data):
     connector = SQLConnect()
@@ -18,6 +18,28 @@ def insertIntoSQL(data):
     connector.commit()
 
 
+def getDayOfTheWeek(date):
+    if len(str(date)) > 19:
+        date = str(date)[:-6]
+    datetimeobject = datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S')
+    day = datetimeobject.weekday()
+
+    if day == 0:
+        return 'MO'
+    elif day == 1:
+        return 'TU'
+    elif day == 2:
+        return 'WE'
+    elif day == 3:
+        return 'TH'
+    elif day == 4:
+        return 'FR'
+    elif day == 5:
+        return 'SA'
+    elif day == 6:
+        return 'SU'
+
+
 def getData(files):
     data = []
     for file in files:
@@ -26,11 +48,10 @@ def getData(files):
                 summary = component.get('SUMMARY', "None")
                 start_time = component.get('DTSTART', ["9999-01-01 00:00:00"]).dt
                 end_time = component.get('DTEND', "'9999-01-01 00:00:00'").dt
-                days = ["None"]
-                end_date = ["9999-01-01 00:00:00+00:00"]
-                if component.get('RRULE', "None") != "None":
-                    days = component.get('RRULE').get('BYDAY', ["None"])
-                    end_date = component.get('RRULE').get('UNTIL', ["9999-01-01 00:00:00+00:00"])
+                if component.get('RRULE', None) is None:
+                    continue
+                days = component.get('RRULE').get('BYDAY', [getDayOfTheWeek(start_time)])
+                end_date = component.get('RRULE').get('UNTIL', ["9999-01-01 00:00:00+00:00"])
                 data.append([str(summary), days, start_time, end_time, end_date])
     return data
 
