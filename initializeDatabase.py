@@ -1,5 +1,5 @@
 from SQLConnect import SQLConnect
-import hydrateDataLoader
+import hidrateDataLoader
 import fitindexDataLoader
 import myFitnessPalDataLoader
 import appleWatchDataLoader
@@ -9,7 +9,7 @@ import hydrationLocation
 def main():
     connector = SQLConnect()
     connector.createDatabase('health')
-    hydrateDataLoader.main()
+    hidrateDataLoader.main()
     fitindexDataLoader.main()
     myFitnessPalDataLoader.main()
     appleWatchDataLoader.main()
