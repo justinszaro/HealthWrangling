@@ -2,15 +2,7 @@ from SQLConnect import SQLConnect
 from datetime import datetime
 
 
-def insertIntoDict(date, value, dictionary):
-    if date in dictionary.keys():
-        dictionary[date] = str((float(dictionary[date]) + float(value)).__round__())
-    else:
-        dictionary[date] = str(value)
-    return dictionary
-
-
-def addTotalToDictionary(line, dictionary):
+def addToDictionary(line, dictionary):
     data_type, date, value = line.split(',')
     date, time = date.split()
     if date in dictionary.keys():
@@ -20,29 +12,16 @@ def addTotalToDictionary(line, dictionary):
     return dictionary
 
 
-def addToDictionary(line, dictionary):
-    data_type, date, value = line.split(',')
-    date, time = date.split()
-    dictionary = insertIntoDict(date, float(value), dictionary)
-    return dictionary
-
-
 def getData(filename):
     heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned = [dict(), dict(), dict(),
                                                                                            dict(), dict()]
+    types = {"HeartRate": heartRate, "StepCount": stepCount, "DistanceWalkingRunning": distanceWalkingRunning,
+             "BasalEnergyBurned": basalEnergyBurned, "ActiveEnergyBurned": activeEnergyBurned}
     with open(filename) as file:
         for line in file:
             data_type = line.split(',')[0]
-            if data_type == "HeartRate":
-                heartRate = addTotalToDictionary(line, heartRate)
-            elif data_type == "StepCount":
-                stepCount = addToDictionary(line, stepCount)
-            elif data_type == "DistanceWalkingRunning":
-                distanceWalkingRunning = addTotalToDictionary(line, distanceWalkingRunning)
-            elif data_type == "BasalEnergyBurned":
-                basalEnergyBurned = addToDictionary(line, basalEnergyBurned)
-            elif data_type == "ActiveEnergyBurned":
-                activeEnergyBurned = addToDictionary(line, activeEnergyBurned)
+            if data_type in types.keys():
+                types[data_type] = addToDictionary(line, types[data_type])
     return [heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned]
 
 
@@ -58,30 +37,12 @@ def getDayOfTheWeek(date):
         return "None"
     datetimeObject = datetime.strptime(date, '%Y-%m-%d')
     day = datetimeObject.weekday()
-
-    if day == 0:
-        return 'Monday'
-    elif day == 1:
-        return 'Tuesday'
-    elif day == 2:
-        return 'Wednesday'
-    elif day == 3:
-        return 'Thursday'
-    elif day == 4:
-        return 'Friday'
-    elif day == 5:
-        return 'Saturday'
-    elif day == 6:
-        return 'Sunday'
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    return days[day]
 
 
-def quotes(string):
-    return '"' + string + '"'
-
-
-def getAverage(heartRate, date):
-    avg = sum(heartRate.get(date, [0])) / len(heartRate.get(date, [1]))
-    return str(avg)
+def getAverage(lst):
+    return sum(lst) / len(lst)
 
 
 def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnergyBurned, activeEnergyBurned):
@@ -92,10 +53,10 @@ def addDataToSQL(dates, heartRate, stepCount, distanceWalkingRunning, basalEnerg
                                          'activeEnergyBurned FLOAT', 'dayOfTheWeek varchar(255)'])
     for date in dates:
         connector.insertIntoTable('AppleWatch',
-                                  [date, getAverage(heartRate, date), stepCount.get(date, '0.0'),
-                                   str(sum(distanceWalkingRunning.get(date, [0.0]))),
-                                   basalEnergyBurned.get(date, '0.0'),
-                                   activeEnergyBurned.get(date, '0.0'), getDayOfTheWeek(date)])
+                                  [date, getAverage(heartRate.get(date, [0])), sum(stepCount.get(date, [0.0])),
+                                   sum(distanceWalkingRunning.get(date, [0.0])),
+                                   sum(basalEnergyBurned.get(date, [0.0])),
+                                   sum(activeEnergyBurned.get(date, [0.0])), getDayOfTheWeek(date)])
     connector.commit()
 
 
