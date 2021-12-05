@@ -67,7 +67,8 @@ def main():
     files = get_filenames('data/icsFiles')
     data = getData(files)
     insertIntoSQL(data)
+    return data
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
